@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kaspi Installment Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      flex: 1;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    .product-item {
+      margin: 10px 0;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 6px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      background-color: #0057ff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #0047d4;
+    }
+    .new-client-form {
+      background-color: #f1f1f1;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h2>Данные Kaspi</h2>
+      <p>Дата покупки: <strong>24.04.25 13:04</strong></p>
+      <p>ФИО Клиента: <strong>Абдурахман Танатар</strong></p>
+      <p>Номер телефона клиента: <strong>+77071234567</strong></p>
+      <p>Сумма: <strong>278000 ₸</strong></p>
+      <p>Номер заказа: <strong>528934</strong></p>
+    </div>
+
+    <div class="card">
+      <h2>Данные Installment</h2>
+      <div id="productsContainer"></div>
+
+      <input type="text" id="codeInput" placeholder="Введите код подтверждения" />
+      <button onclick="handleConfirm()">Отправить код</button>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      { id: 1, name: "Годовой", price: 179000 },
+      { id: 2, name: "Годовой", price: 179000 },
+      { id: 3, name: "Годовой", price: 179000 },
+    ];
+
+    const clubOptions = ["Invictus GO Bahus", "Invictus GO Bokeihan", "Invictus GO Turan"];
+    const productsContainer = document.getElementById("productsContainer");
+
+    products.forEach((product) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "product-item";
+
+      const title = document.createElement("div");
+      title.textContent = `${product.name} - ${product.price} ₸`;
+      wrapper.appendChild(title);
+
+      const clientInput = document.createElement("input");
+      clientInput.type = "text";
+      clientInput.placeholder = "Поиск номеру или ФИО";
+      wrapper.appendChild(clientInput);
+
+      const createBtn = document.createElement("button");
+      createBtn.textContent = "Создать клиента";
+      createBtn.type = "button";
+      createBtn.style.background = "#e0e0e0";
+      createBtn.style.color = "#333";
+      createBtn.onclick = () => toggleNewClientForm(wrapper);
+      wrapper.appendChild(createBtn);
+
+      const newClientForm = document.createElement("div");
+      newClientForm.className = "new-client-form";
+      newClientForm.style.display = "none";
+      newClientForm.innerHTML = `
+        <input type="text" placeholder="Фамилия" />
+        <input type="text" placeholder="Имя" />
+        <input type="date" placeholder="Дата рождения" />
+        <select>
+          <option value="">Пол</option>
+          <option value="Мужской">Мужской</option>
+          <option value="Женский">Женский</option>
+        </select>
+      `;
+      wrapper.appendChild(newClientForm);
+
+      const clubSelect = document.createElement("select");
+      const defaultOption = document.createElement("option");
+      defaultOption.text = "Выберите клуб";
+      defaultOption.value = "";
+      clubSelect.appendChild(defaultOption);
+      clubOptions.forEach((club) => {
+        const opt = document.createElement("option");
+        opt.value = club;
+        opt.text = club;
+        clubSelect.appendChild(opt);
+      });
+      wrapper.appendChild(clubSelect);
+
+      wrapper.setAttribute("data-id", product.id);
+      productsContainer.appendChild(wrapper);
+    });
+
+    function toggleNewClientForm(wrapper) {
+      const form = wrapper.querySelector(".new-client-form");
+      form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+
+    function handleConfirm() {
+      const code = document.getElementById("codeInput").value;
+      console.log("Код подтверждения:", code);
+
+      const allProducts = document.querySelectorAll(".product-item");
+      allProducts.forEach((item) => {
+        const id = item.getAttribute("data-id");
+        const client = item.querySelector("input").value;
+        const club = item.querySelector("select").value;
+        console.log(`Продукт ID: ${id}, Клиент: ${client}, Клуб: ${club}`);
+
+        const newClientForm = item.querySelector(".new-client-form");
+        if (newClientForm && newClientForm.style.display === "block") {
+          const [lastName, firstName, birthDate, gender] = newClientForm.querySelectorAll("input, select");
+          console.log(`Создан новый клиент → Фамилия: ${lastName.value}, Имя: ${firstName.value}, ДР: ${birthDate.value}, Пол: ${gender.value}`);
+        }
+      });
+
+      alert("Подтверждение всех абонементов отправлено. Проверьте консоль.");
+    }
+  </script>
+</body>
+</html>
+
+
